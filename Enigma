@@ -1,0 +1,117 @@
+/*正常顺序的字母表：
+1A 2B 3C 4D 5E 6F 7G 8H 9I 10J 11K 12L 13M 14N 15O 16P 17Q 18R 19S 20T 21U 22V 23W 24X 25Y 26Z 
+
+第一个转子：
+
+1X 2E 3D 4C 5R 6F 7V 8T 9G 10B 11Y 12H 13N 14U 15J 16M 17I 18K 19O 20L 21P 22Q 23A 24Z 25W 26S
+
+第二个转子：
+
+1Y 2U 3I 4O 5P 6A 7S 8D 9F 10G 11H 12J 13K 14L 15Z 16X 17C 18V 19B 20N 21M 22Q 23W 24E 25R 26T
+
+第三个转子：
+1Z 2C 3B 4M 5W 6R 7Y 8I 9P 10S 11F 12H 13K 14X 15V 16N 17Q 18E 19T 20U 21O 22A 23D 24G 25J 26L
+
+反射器：
+1Z 2Y 3X 4W 5V 6U 7T 8S 9R 10Q 11P 12O 13N 14M 15L 16K 17J 18I 19H 20G 21F 22E 23D 24C 25B 26A
+*/
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+using namespace  std;
+void show(char s[],int x) {
+	for (int i = 0; i < x; i++) {
+		cout << s[i] << " ";
+	}
+	cout << endl;
+}
+void zhuanlun(char s[], char x) {
+	while (s[0] != x) {
+		s[26] = s[25];
+		for (int i = 25; i > 0; i--) {
+			s[i] = s[i - 1];
+		}
+		s[0] = s[26];//完成一轮进行一次旋转
+	}
+}
+
+
+char jiami(char s[], char yu[],char x) {
+	int i = 0;
+
+	while (s[i] != x) {
+		i++;
+	}
+	char d = yu[i];
+	s[26] = s[25];
+	for (int i = 25; i > 0; i--) {
+		s[i] = s[i - 1];
+	}
+	s[0] = s[26];
+	return d;
+}
+char jiemi(char s[], char yu[], char x) {
+	int i = 0;
+	while (yu[i] != x) {
+		i++;
+	}
+	char d = s[i];
+	s[26] = s[25];
+	for (int i = 25; i > 0; i--) {
+		s[i] = s[i - 1];
+	}
+	s[0] = s[26];
+	return d;
+}
+char duiying(char s[], char yu[], char x) {
+	int i = 0;
+
+	while (yu[i] != x) {
+		i++;
+	}
+	char d = s[i];
+	return d;
+}
+
+int main() {
+	char yuan[27] = { "abcdefghijklmnopqrstuvwxyz" };
+	char a[27] = { "xedcrfvtgbyhnujmikolpqazws" };
+	char b[27] = { "zcbmwryipsfhkxvnqetuoadgjl" };
+	char c[27] = { "zyxwvutsrqponmlkjihgfedcba" };
+	char fanse[27] = { "zyxwvutsrqponmlkjihgfedcba" };
+	char m1, m2, m3;
+	cout << "请输入三位密钥：";
+	cin >> m1 >> m2 >> m3;
+	char s[10];
+	cout << "请输入加密内容：";
+	for (int i = 0; i < 10; i++) {
+		cin >> s[i];
+	}
+	cout << "原文：";show(s, 10);
+	//加密
+	zhuanlun(a, m1); zhuanlun(b, m2); zhuanlun(c, m3);
+	for (int i = 0; i < 10; i++) {
+		s[i]=jiami(a, yuan, s[i]);
+		s[i] = jiami(b, yuan, s[i]);
+		s[i] = jiami(c, yuan, s[i]);
+		s[i] = duiying(fanse, yuan, s[i]);
+	}
+	cout << "密文：";show(s, 10);
+
+	cout << "请输入密文内容：";
+	for (int i = 0; i < 10; i++) {
+		cin >> s[i];
+	}
+	cout << "密文："; show(s, 10);
+	//解密
+	zhuanlun(a, m1); zhuanlun(b, m2); zhuanlun(c, m3);
+	for (int i = 0; i < 10; i++) {
+		s[i] = duiying(yuan, fanse, s[i]);
+		s[i] = jiemi(c, yuan, s[i]);
+		s[i] = jiemi(b, yuan, s[i]);
+		s[i] = jiemi(a, yuan, s[i]);
+	}
+	cout << "原文："; show(s, 10);
+	system("pause");
+	return 0;
+}
